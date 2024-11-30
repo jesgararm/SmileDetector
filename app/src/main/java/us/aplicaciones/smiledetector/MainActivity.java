@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Método onCreate que se llama cuando se crea la actividad.
-     * @param savedInstanceState Estado guardado de la instancia anterior.
+     * @param savedInstanceState Estado guardado de la instancia anterior
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
