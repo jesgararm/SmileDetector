@@ -1,13 +1,15 @@
 package us.aplicaciones.smiledetector;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Button;
@@ -26,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.Objects;
 
 /**
  * MainActivity es la actividad principal de la aplicación que maneja la captura de fotos,
@@ -57,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
         Button btnSelectGallery = findViewById(R.id.btn_select_gallery);
 
         // Configura los listeners para los botones de tomar foto y seleccionar de la galería
-        btnTakePhoto.setOnClickListener(v -> capturePhoto());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            btnTakePhoto.setOnClickListener(v -> capturePhoto());
+        }
         btnSelectGallery.setOnClickListener(v -> selectFromGallery());
 
         // Carga el modelo de detección de sonrisas
@@ -73,13 +76,18 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Inicia la captura de una foto utilizando la cámara.
      */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("QueryPermissionsNeeded")
     private void capturePhoto() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
         } else {
-            Toast.makeText(this, "No se pudo abrir la cámara", Toast.LENGTH_SHORT).show();
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            } else {
+                Toast.makeText(this, "No se pudo abrir la cámara", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

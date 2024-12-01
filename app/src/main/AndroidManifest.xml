@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="us.aplicaciones.smiledetector">
 
-    <uses-permission android:name="android.permission.CAMERA"
-        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
